@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>❤️ Love Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0b0b12;      /* nền tối sâu */
+      --bg2:#1a1025;      /* tím đậm */
+      --pink:#ff5ca4;     /* hồng chủ đạo */
+      --magenta:#d946ef;  /* tím hồng */
+      --glow:#ff9bd0;     /* viền sáng */
+      --text:#f6e8f8;
+      --muted:#c2b6cc;
+      --photo-url: url("lala.jpeg");
+
+    }
+
+    /* Reset nho nhỏ */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 70% 20%,rgba(255,92,164,.18),transparent 60%)
+                  ,radial-gradient(900px 700px at 20% 80%,rgba(217,70,239,.16),transparent 60%)
+                  ,linear-gradient(180deg,var(--bg1),var(--bg2));
+      overflow:auto;
+    }
+
+    /* Lớp sao lấp lánh */
+    .stars, .stars::before, .stars::after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-repeat:repeat; background-size:contain;
+      animation: twinkle 12s linear infinite;
+      opacity:.45;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,.5));
+    }
+    .stars{background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent 60%),
+                               radial-gradient(2px 2px at 120px 80px,#fff,transparent 60%),
+                               radial-gradient(1px 1px at 220px 60px,#fff,transparent 60%),
+                               radial-gradient(1.5px 1.5px at 320px 120px,#fff,transparent 60%);
+    }
+    .stars::before{background-image:radial-gradient(1.5px 1.5px at 60px 140px,#fff,transparent 60%),
+                                      radial-gradient(1px 1px at 260px 30px,#fff,transparent 60%),
+                                      radial-gradient(2px 2px at 360px 200px,#fff,transparent 60%);
+                    animation-duration:18s; opacity:.35}
+    .stars::after{background-image:radial-gradient(1px 1px at 80px 220px,#fff,transparent 60%),
+                                     radial-gradient(1.5px 1.5px at 180px 180px,#fff,transparent 60%),
+                                     radial-gradient(1px 1px at 380px 40px,#fff,transparent 60%);
+                   animation-duration:22s; opacity:.25}
+    @keyframes twinkle{0%{transform:translateY(0)}100%{transform:translateY(-50px)}}
+
+    /* Bố cục chính */
+    .wrap{position:relative; min-height:100dvh; display:grid; place-items:center; padding:24px}
+
+    .card{
+      position:relative;
+      width:min(100%,980px);
+      border-radius:32px;
+      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 0 30px rgba(255,255,255,.05);
+      overflow:hidden;
+    }
+
+    .grid{display:grid; grid-template-columns:1.2fr 1fr; gap:0;}
+    @media (max-width:880px){ .grid{grid-template-columns:1fr} }
+
+    /* Khung trái: canvas + tiêu đề */
+    .hero{
+      position:relative; min-height:480px; display:grid; place-items:center; padding:32px;
+      background:
+        radial-gradient(80% 60% at 30% 30%, rgba(255,155,208,.25), transparent 60%),
+        radial-gradient(80% 60% at 70% 70%, rgba(217,70,239,.22), transparent 60%);
+    }
+    canvas#pinkboard{ width:100%; height:100%; position:absolute; inset:0; z-index:0 }
+
+    .title{
+      position:relative; z-index:2; text-align:center; padding:8px 16px;
+    }
+    .title h1{
+      margin:0; font-size:clamp(32px,6vw,56px); line-height:1.05; font-weight:700; letter-spacing:.5px;
+      text-shadow: 0 0 10px rgba(255,155,208,.6), 0 0 24px rgba(217,70,239,.35);
+    }
+    .title .script{ font-family:"Great Vibes",cursive; font-size:clamp(32px,6vw,64px); color:var(--glow)}
+    .tagline{margin-top:10px; color:var(--muted); font-weight:400}
+
+    /* Khung phải: thông điệp */
+    .panel{
+      position:relative; padding:28px 28px 32px; display:flex; flex-direction:column; gap:20px;
+      backdrop-filter: blur(6px);
+      border-left:1px solid rgba(255,255,255,.06);
+    }
+
+    .type{
+      position:relative; font-size:clamp(16px,2.6vw,22px); line-height:1.6; padding:16px 18px; border-radius:16px;
+      background:rgba(12,10,16,.45); border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 6px 20px rgba(0,0,0,.35);
+    }
+    .type .cursor{ display:inline-block; width:10px; margin-left:2px; background:var(--pink); animation:blink 1s steps(1,end) infinite }
+    @keyframes blink{ 50%{ opacity:0 } }
+
+    .counters{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+    .counter{
+      padding:14px 12px; border-radius:14px; text-align:center;
+      background:linear-gradient(180deg,rgba(255,92,164,.14),rgba(217,70,239,.10));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .counter .num{ font-size:clamp(22px,4vw,32px); font-weight:700 }
+    .counter .lbl{ font-size:12px; letter-spacing:1px; text-transform:uppercase; opacity:.8 }
+
+    .controls{ display:flex; gap:10px; flex-wrap:wrap }
+    .btn{
+      appearance:none; border:none; cursor:pointer; padding:12px 16px; border-radius:999px; font-weight:600;
+      color:white; background:linear-gradient(90deg,var(--pink),var(--magenta));
+      box-shadow:0 10px 24px rgba(217,70,239,.35), 0 0 0 1px rgba(255,255,255,.12) inset;
+      transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+    }
+    .btn:hover{ transform: translateY(-2px) }
+    .btn.secondary{ background:transparent; border:1px solid rgba(255,255,255,.16) }
+
+    .footer{ display:flex; align-items:center; justify-content:space-between; gap:10px; color:var(--muted); font-size:13px; margin-top:6px }
+    .names{ font-weight:700; color:var(--glow); text-shadow:0 0 10px rgba(255,155,208,.6) }
+
+    /* Hiệu ứng trái tim nổi nhỏ */
+    .float-heart{ position:fixed; font-size:18px; pointer-events:none; will-change:transform,opacity; z-index:5 }
+
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="wrap">
+    <section class="card">
+      <div class="grid">
+        <!-- Khung trái: Canvas trái tim + tiêu đề -->
+        <div class="hero">
+          <canvas id="pinkboard" aria-hidden="true"></canvas>
+          <div class="title">
+            <div class="script">Yêu Mưa</div>
+            <h1>Luôn có anh ở đây <span style="color:var(--pink)">EM BÉ NHÉE</span></h1>
+            <div class="tagline"></div>
+          </div>
+        </div>
+
+        <!-- Khung phải: Thông điệp, bộ đếm, nút bấm -->
+        <aside class="panel">
+          <div class="type" id="typewriter" aria-live="polite"></div>
+
+          <div class="counters" id="counters">
+            <div class="counter"><div class="num" id="days">–</div><div class="lbl">ngày bên nhau</div></div>
+            <div class="counter"><div class="num" id="hours">–</div><div class="lbl">giờ yêu thương</div></div>
+            <div class="counter"><div class="num" id="beats">–</div><div class="lbl">nhịp tim💗</div></div>
+          </div>
+
+          <div class="controls">
+            <button class="btn" id="burstBtn">💞 Thả trái tim</button>
+            <button class="btn secondary" id="musicBtn" aria-pressed="false">🎵 Bật nhạc</button>
+          </div>
+
+          <div class="footer">
+            <div>
+              <span class="names">Bong</span> ❤ <span class="names">Mưa</span>
+            </div>
+            <div id="since">Từ: —</div>
+            
+          </div>
+          <div class="script">Nhấp chuột vào màn hình trái, để gửi trái tym cho anh nhé 😉</div>
+
+          <!-- Audio  -->
+          <audio id="bgm" loop>
+             <source src="coemvuii.mp3" type="audio/mpeg">
+          </audio>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script>
+  /* =================== Particle Heart  =================== */
+  const settings = {
+    particles: { length: 1400, duration: 2, velocity: 90, effect: -1.3, size: 12 },
+  };
+  (function(canvas){
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+
+    function Point(x=0,y=0){ this.x=x; this.y=y }
+    Point.prototype.clone=function(){ return new Point(this.x,this.y) }
+    Point.prototype.length=function(l){ if(l===undefined) return Math.hypot(this.x,this.y); this.normalize(); this.x*=l; this.y*=l; return this }
+    Point.prototype.normalize=function(){ const len=this.length()||1; this.x/=len; this.y/=len; return this }
+
+    function Particle(){ this.position=new Point(); this.velocity=new Point(); this.acceleration=new Point(); this.age=0 }
+    Particle.prototype.init=function(x,y,dx,dy){ this.position.x=x; this.position.y=y; this.velocity.x=dx; this.velocity.y=dy; this.acceleration.x=dx*settings.particles.effect; this.acceleration.y=dy*settings.particles.effect; this.age=0 }
+    Particle.prototype.update=function(dt){ this.position.x+=this.velocity.x*dt; this.position.y+=this.velocity.y*dt; this.velocity.x+=this.acceleration.x*dt; this.velocity.y+=this.acceleration.y*dt; this.age+=dt }
+    Particle.prototype.draw=function(context,img){
+      const ease=t=>{ t=1-t; return 1-t*t*t }
+      const size=img.width*ease(this.age/settings.particles.duration)
+      context.globalAlpha=1-this.age/settings.particles.duration
+      context.drawImage(img,this.position.x-size/2,this.position.y-size/2,size,size)
+    }
+
+    // Pool
+    const poolLen = settings.particles.length
+    const particles = Array.from({length:poolLen},()=>new Particle())
+    let firstActive=0, firstFree=0
+    const add=(x,y,dx,dy)=>{ particles[firstFree].init(x,y,dx,dy); firstFree=(firstFree+1)%poolLen; if(firstActive===firstFree) firstActive=(firstActive+1)%poolLen }
+    const update=(dt)=>{
+      if(firstActive<firstFree){ for(let i=firstActive;i<firstFree;i++) particles[i].update(dt) }
+      else{ for(let i=firstActive;i<poolLen;i++) particles[i].update(dt); for(let i=0;i<firstFree;i++) particles[i].update(dt) }
+      while(firstActive!==firstFree && particles[firstActive].age>=settings.particles.duration){ firstActive=(firstActive+1)%poolLen }
+    }
+    const draw=(context,img)=>{
+      if(firstActive<firstFree){ for(let i=firstActive;i<firstFree;i++) particles[i].draw(context,img) }
+      else{ for(let i=firstActive;i<poolLen;i++) particles[i].draw(context,img); for(let i=0;i<firstFree;i++) particles[i].draw(context,img) }
+    }
+
+    function pointOnHeart(t){
+      return new Point(160*Math.sin(t)**3, 130*Math.cos(t)-50*Math.cos(2*t)-20*Math.cos(3*t)-10*Math.cos(4*t)+25)
+    }
+    // create particle image
+    const heartImg = (()=>{ const c=document.createElement('canvas'), cx=c.getContext('2d'); c.width=c.height=settings.particles.size*DPR; cx.scale(DPR,DPR)
+      function to(t){ const p=pointOnHeart(t); p.x=settings.particles.size/2 + p.x*settings.particles.size/350; p.y=settings.particles.size/2 - p.y*settings.particles.size/350; return p }
+      cx.beginPath(); let t=-Math.PI, p=to(t); cx.moveTo(p.x,p.y); while(t<Math.PI){ t+=0.01; p=to(t); cx.lineTo(p.x,p.y) } cx.closePath(); cx.fillStyle='#FF5CA4'; cx.fill(); const img=new Image(); img.src=c.toDataURL(); return img })()
+
+    let time, raf
+    const rate = settings.particles.length/settings.particles.duration
+
+    function render(){
+      raf=requestAnimationFrame(render)
+      const now=performance.now()/1000, dt=now-(time||now); time=now
+      ctx.clearRect(0,0,canvas.width,canvas.height)
+      const amount=rate*dt
+      for(let i=0;i<amount;i++){
+        const pos=pointOnHeart(Math.PI - 2*Math.PI*Math.random());
+        const dir=pos.clone().length(settings.particles.velocity)
+        add(canvas.width/2 + pos.x, canvas.height/2 - pos.y, dir.x, -dir.y)
+      }
+      update(dt); draw(ctx, heartImg)
+    }
+
+    function resize(){
+      const rect=canvas.getBoundingClientRect()
+      canvas.width = Math.round(rect.width*DPR)
+      canvas.height= Math.round(rect.height*DPR)
+      ctx.setTransform(DPR,0,0,DPR,0,0)
+    }
+    window.addEventListener('resize', resize, {passive:true})
+    setTimeout(()=>{ resize(); render() }, 30)
+
+    // hiệu ứng burst khi click
+    canvas.addEventListener('pointerdown', (e)=>{
+      const r=canvas.getBoundingClientRect();
+      const x=(e.clientX-r.left)*DPR, y=(e.clientY-r.top)*DPR
+      for(let i=0;i<80;i++){
+        const ang = Math.random()*Math.PI*2
+        const v = settings.particles.velocity*(.5+.8*Math.random())
+        add(x,y, Math.cos(ang)*v, Math.sin(ang)*v)
+      }
+      makeFloatHeart(e.clientX, e.clientY)
+    })
+  })(document.getElementById('pinkboard'))
+
+  /* =================== Typewriter =================== */
+  const lines=[
+    'Em Bé ơiii ',
+    'EM Bé Yêu àaaa ',
+    'Nghe anh nói nè ',
+    'Giận có anh Dỗ 🥰',
+    'Dỗi có anh Thương 😋',
+    'Lẫy có anh Chiều 😘 ',
+    'Buồn thì nói anh nghe nhíee  ',
+    'Hãy nhớ rằng... ',
+    'Luôn có anh ở đây đồng hành cùng em bé nhé 🤗 ',
+    'Thật tuyệt khi có em bé ở bên hehe ',
+    'Thương em bé nhìu lắm :33 '
+  ]
+  const twEl=document.getElementById('typewriter');
+  let li=0, ci=0, back=false
+  function typeLoop(){
+    const cur = lines[li]
+    if(!back){ ci++; twEl.innerHTML = cur.slice(0,ci)+ '<span class="cursor"></span>'; if(ci>=cur.length){ back=true; setTimeout(typeLoop,1200); return } }
+    else { ci--; twEl.innerHTML = cur.slice(0,ci)+ '<span class="cursor"></span>'; if(ci<=0){ back=false; li=(li+1)%lines.length } }
+    setTimeout(typeLoop, back? 22 : 40)
+  }
+  typeLoop()
+
+  /* =================== Counters  =================== */
+  const START_DATE = new Date('2025-09-19T23:30:00'); // 
+  const dayEl = document.getElementById('days'), hourEl=document.getElementById('hours'), beatEl=document.getElementById('beats'), sinceEl=document.getElementById('since')
+  sinceEl.textContent = ' ' + START_DATE.toLocaleDateString('vi-VN')
+  function tick(){
+    const now = new Date();
+    const diff = now-START_DATE; if(diff<0) return
+    const days = Math.floor(diff/864e5)
+    const hours = Math.floor((diff%864e5)/36e5)
+    const heartBeats = Math.floor(diff/1000 * 1.15) 
+    dayEl.textContent = days.toString()
+    hourEl.textContent = hours.toString()
+    beatEl.textContent = heartBeats.toLocaleString('vi-VN')
+  }
+  tick(); setInterval(tick, 1000)
+
+  /* =================== Nút bấm & icon trái tim nổi =================== */
+  const burstBtn=document.getElementById('burstBtn');
+  burstBtn.addEventListener('click',()=>{
+    // Trigger một burst ở giữa màn hình
+    const midX = window.innerWidth/2, midY = window.innerHeight/2
+    document.getElementById('pinkboard').dispatchEvent(new PointerEvent('pointerdown',{clientX:midX, clientY:midY}))
+  })
+  function makeFloatHeart(x,y){
+    const h=document.createElement('div'); h.className='float-heart'; h.textContent='💗'; h.style.left=x+'px'; h.style.top=y+'px'; document.body.appendChild(h)
+    const dist=60+Math.random()*60, dur=900+Math.random()*600, ang=(-80 + Math.random()*160) * Math.PI/180
+    const start=performance.now()
+    function anim(t){
+      const p=(t-start)/dur; if(p>=1){ h.remove(); return }
+      const dx=Math.cos(ang)*dist*p, dy=-Math.sin(ang)*dist*p - 20*p
+      h.style.transform=`translate(${dx}px, ${dy}px) scale(${1+p*.6})`;
+      h.style.opacity = (1-p).toFixed(2);
+      requestAnimationFrame(anim)
+    }
+    requestAnimationFrame(anim)
+  }
+
+  /* =================== Nhạc nền (tùy chọn) =================== */
+  const musicBtn=document.getElementById('musicBtn'); const bgm=document.getElementById('bgm');
+  let playing=false
+  musicBtn.addEventListener('click', async()=>{
+    try{
+      if(!playing){ await bgm.play(); musicBtn.textContent='⏸️ Tắt nhạc'; musicBtn.setAttribute('aria-pressed','true') }
+      else { bgm.pause(); musicBtn.textContent='🎵 Bật nhạc'; musicBtn.setAttribute('aria-pressed','false') }
+      playing=!playing
+    }catch(err){ alert('') }
+  })
+  </script>
+</body>
+</html>
